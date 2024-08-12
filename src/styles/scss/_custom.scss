@@ -15,17 +15,22 @@
   padding: 25px 0;
 }
 
-.sidebar__btn-menu,
-.topbar {
-  height: 80px;
+.rounded-btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  background-color: #191b1d;
+  color: #ffffff;
+  text-decoration: none;
+  border: none;
 }
 
-.topbar__avatar {
-  width: 50px !important;
-  height: 50px !important;
+.bright-yellow {
+  background-color: #F4FF47; 
+  color: #000000;
+  font-weight: 500;
 }
 
-.topbar__avatar img {
-  width: 50px !important;
-  height: 50px !important;
-}
+.form-rounded {
+  border-radius: 1rem;
+  }

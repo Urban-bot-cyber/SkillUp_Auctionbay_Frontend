@@ -1,5 +1,9 @@
+
 import Layout from 'components/ui/Layout'
+import { routes } from 'constants/routesConstants'
 import { FC } from 'react'
+import { NavLink } from 'react-router-dom'
+import authStore from 'stores/auth.store'
 
 const Home: FC = () => {
   return (
@@ -7,25 +11,22 @@ const Home: FC = () => {
       <div className="p-2 mb-4">
         <div className="container-fluid py-4">
           <h1 className="display-5 fw-bold">Welcome</h1>
-          <p className="col-md-8 fs-4">
-            In this tutorial you will learn how to use:
-          </p>
-          <ol>
-            <li>react-bootstrap</li>
-            <li>react-hook-form with yup validation</li>
-            <li>CRUD functionality - Create Read Update Delete</li>
-            <li>file upload with NestJS</li>
-            <li>connect ReactJS and NestJS</li>
-            <li>setup NestJS with custom logging</li>
-            <li>connect to PostgreSQL database using TypeORM</li>
-            <li>create dtos with validation</li>
-            <li>deploy ReactJS to AWS S3 Bucket</li>
-            <li>deploy NestJS to AWS ECS (Elastic Container Service)</li>
-          </ol>
         </div>
+
+        {authStore.user ? (
+          <h4>Grid</h4>
+        ) : (
+          <div className="container-fluid py-4 d-flex justify-content-center flex-column align-items-center">
+            <h1 className="display-5 fw-bold">E-auctions made easy!</h1>
+            <p className="mt-3 text-center">Simple way for selling your unused products, or <br />
+              getting a deal on product you want!</p>
+            <NavLink className="nav-link rounded-btn bright-yellow" to={routes.SIGNUP}>
+              Start bidding
+            </NavLink>
+          </div>
+        )}
       </div>
     </Layout>
   )
 }
-
 export default Home

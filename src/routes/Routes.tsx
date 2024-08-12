@@ -20,12 +20,24 @@ const Home = lazy(() => import('pages/Home'))
 /* Private routes */
 
 /* Restricted routes */
+const Login = lazy(() => import('pages/Login'))
+const Register = lazy(() => import('pages/Register'))
 
 /* Error routes */
 const Page404 = lazy(() => import('pages/Page404'))
 
 export const AppRoutes: AppRoute[] = [
   // Restricted Routes
+  {
+    type: RouteType.RESTRICTED,
+    path: '/login',
+    children: <Login />,
+  },
+  {
+    type: RouteType.RESTRICTED,
+    path: '/signup',
+    children: <Register />,
+  },
   // Private Routes
   // Public Routes
   {
