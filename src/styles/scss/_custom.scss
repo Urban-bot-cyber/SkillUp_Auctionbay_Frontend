@@ -25,6 +25,12 @@
   border: none;
 }
 
+.rounded-btn:hover {
+  background-color: #191b1d; 
+  color: #ffffff;
+  text-decoration: none;
+}
+
 .bright-yellow {
   background-color: #F4FF47; 
   color: #000000;
@@ -33,4 +39,8 @@
 
 .form-rounded {
   border-radius: 1rem;
+  }
+
+  .link {
+    text-decoration: none;
   }

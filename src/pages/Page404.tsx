@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
+import authStore from 'stores/auth.store'
 
 const Page404: FC = () => {
   return (
@@ -8,8 +9,13 @@ const Page404: FC = () => {
         Nothing found <b>404</b>!
       </h1>
       <Link to="/">Go home</Link>
+
+      {!authStore.user ? (
+        <Link to="/">Go home</Link>
+      ) : (
+        <Link to="/auctions">Go Home</Link>
+      )}
     </div>
   )
 }
-
 export default Page404
