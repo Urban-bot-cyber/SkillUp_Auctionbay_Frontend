@@ -3,7 +3,7 @@ import Toast from 'react-bootstrap/Toast'
 import { Form } from 'react-bootstrap'
 import { Controller } from 'react-hook-form'
 import FormLabel from 'react-bootstrap/FormLabel'
-import Button from '@mui/material/Button' // Updated import
+import Button from '@mui/material/Button' 
 import { UserType } from 'models/auth'
 import { useNavigate } from 'react-router-dom'
 import { UpdateUserFields, useUpdateUserForm } from 'hooks/react-hook-form/useUpdateUser'
@@ -146,6 +146,7 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                             <input
                                                 {...field}
                                                 type="text"
+                                                placeholder={authStore.user?.first_name}
                                                 aria-label="First name"
                                                 aria-describedby="first_name"
                                                 className={
@@ -171,6 +172,7 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                             <input
                                                 {...field}
                                                 type="text"
+                                                placeholder={authStore.user?.last_name}
                                                 aria-label="Last name"
                                                 aria-describedby="last_name"
                                                 className={
@@ -197,7 +199,7 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                     <input
                                         {...field}
                                         type="email"
-                                        placeholder="example@gmail.com"
+                                        placeholder={authStore.user?.email}
                                         aria-label="Email"
                                         aria-describedby="email"
                                         className={

@@ -12,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { Modal } from 'react-bootstrap'
 import UpdateUserForm from 'components/user/UpdateUserForm'
+import CreateItemForm from 'components/item/CreateItemForm'
 
 const Navbar: FC = () => {
   const navigate = useNavigate()
@@ -20,12 +21,23 @@ const Navbar: FC = () => {
   const [showModal, setShowModal] = useState(false)
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false)
 
+  const currentUserId = authStore.user?.id
 
   const handleAvatarClick = () => {
     setIsPopoverOpen((prev) => !prev)
   }
-  
+
+  const handleAddClick = () => {
+    setIsCreateItemModalOpen(true)
+  }
+
+  const handleSignoutAndClose = async () => {
+    handleCloseModal()
+    await singout()
+  }
+
   const singout = async () => {
     const response = await API.signout()
     if (response.data?.statusCode === StatusCode.BAD_REQUEST) {
@@ -36,6 +48,7 @@ const Navbar: FC = () => {
       setShowError(true)
     } else {
       authStore.signout()
+      setShowModal(false)
       navigate('/')
     }
   }
@@ -46,6 +59,10 @@ const Navbar: FC = () => {
 
   const handleCloseModal = () => {
     setShowModal(false)
+  }
+
+  const handleCloseCreateItemModal = () => {
+    setIsCreateItemModalOpen(false)
   }
 
   return (
@@ -68,7 +85,6 @@ const Navbar: FC = () => {
                   backgroundColor: '#F6F6F4',
                 }}
               >
-                {}
                 <IconButton
                   sx={{
                     backgroundColor: '#f1f3f4',
@@ -84,8 +100,8 @@ const Navbar: FC = () => {
                   <NotificationsIcon sx={{ color: 'black' }} />
                 </IconButton>
 
-                {}
                 <IconButton
+                  onClick={handleAddClick}  // This triggers the modal with CreateItemForm
                   sx={{
                     backgroundColor: '#F4FF47',
                     padding: '10px',
@@ -100,7 +116,8 @@ const Navbar: FC = () => {
                   <AddIcon sx={{ color: 'black' }} />
                 </IconButton>
 
-                {}
+                <CreateItemForm show={isCreateItemModalOpen} currentUserId={currentUserId} handleClose={handleCloseCreateItemModal} />
+
                 <div onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
                   <Avatar src="/path-to-image.jpg" alt="User" />
                 </div>
@@ -134,7 +151,6 @@ const Navbar: FC = () => {
         </AppBar>
       </header>
 
-      {}
       {isPopoverOpen && (
         <Box
           sx={{
@@ -168,7 +184,7 @@ const Navbar: FC = () => {
             </Button>
           <link/>
           <Button
-            onClick={singout}
+            onClick={handleSignoutAndClose}
             fullWidth
             sx={{
               justifyContent: 'center',
@@ -187,9 +203,9 @@ const Navbar: FC = () => {
         </Box>
       )}
 
-      <Modal show={showModal} onHide={handleCloseModal} centered>
+      <Modal show={showModal} centered>
         <Modal.Body>
-          <UpdateUserForm defaultValues={authStore.user} onCloseModal={handleCloseModal} />
+          <UpdateUserForm defaultValues={authStore.user} onCloseModal={handleCloseModal}/>
         </Modal.Body>
       </Modal>
 
