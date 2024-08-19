@@ -2,15 +2,24 @@ import React, { useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import PersonIcon from '@mui/icons-material/Person'
+import { useNavigate } from 'react-router-dom'
+import { routes } from 'constants/routesConstants'
 
 type TabType = 'auctions' | 'profile'
 
 const Slider = () => {
   const [activeTab, setActiveTab] = useState<TabType>('auctions')
+  const navigate = useNavigate()  // Initialize useNavigate
 
   const handleTabClick = (tab: TabType) => {
     setActiveTab(tab)
+    if (tab === 'auctions') {
+      navigate(routes.AUCTIONS)  // Navigate to auctions route
+    } else if (tab === 'profile') {
+      navigate(routes.PROFILE)  // Navigate to profile route
+    }
   }
+
   return (
     <Box
       sx={{
@@ -61,7 +70,7 @@ const Slider = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <PersonIcon sx={{ color: activeTab === 'profile' ? 'white' : 'gray' }} />
+          <PersonIcon sx={{ color: activeTab === 'profile' ? 'white' : 'gray' }} />
           <Typography variant="body1" sx={{ marginLeft: '8px' }}>
             Profile
           </Typography>

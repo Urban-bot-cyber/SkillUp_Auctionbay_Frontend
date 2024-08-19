@@ -1,7 +1,7 @@
 import { routes } from 'constants/routesConstants'
 import { FC, useState } from 'react'
 import ToastContainer from 'react-bootstrap/ToastContainer'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import authStore from 'stores/auth.store'
 import Toast from 'react-bootstrap/Toast'
 import { StatusCode } from 'constants/errorConstants'
@@ -13,9 +13,11 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import { Modal } from 'react-bootstrap'
 import UpdateUserForm from 'components/user/UpdateUserForm'
 import CreateItemForm from 'components/item/CreateItemForm'
+import Slider from 'components/slider'
 
 const Navbar: FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [apiError, setApiError] = useState('')
   const [showError, setShowError] = useState(false)
   const [showModal, setShowModal] = useState(false)
@@ -101,7 +103,7 @@ const Navbar: FC = () => {
                 </IconButton>
 
                 <IconButton
-                  onClick={handleAddClick}  // This triggers the modal with CreateItemForm
+                  onClick={handleAddClick}
                   sx={{
                     backgroundColor: '#F4FF47',
                     padding: '10px',
@@ -150,6 +152,8 @@ const Navbar: FC = () => {
           </Toolbar>
         </AppBar>
       </header>
+
+      {location.pathname === routes.AUCTIONS && <Slider />} {/* Conditionally render the Slider component */}
 
       {isPopoverOpen && (
         <Box

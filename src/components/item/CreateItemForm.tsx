@@ -55,7 +55,7 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
         } else {
             const formData = new FormData()
             formData.append('image', file, file.name)
-            const fileResponse = await API.uploadItemImage(
+            const fileResponse = await API.UploadItemImage(
                 formData,
                 response.data.id,
             )

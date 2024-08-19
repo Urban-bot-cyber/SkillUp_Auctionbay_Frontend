@@ -4,6 +4,7 @@ import { Route, RouteProps, Routes as Switch } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import RestrictedRoute from './RestrictedRoute'
 
+
 export enum RouteType {
   PUBLIC,
   PRIVATE,
@@ -18,6 +19,9 @@ type AppRoute = RouteProps & {
 const Home = lazy(() => import('pages/Home'))
 
 /* Private routes */
+const Auctionbay = lazy(() => import('pages/Auctions'))
+const ItemDetails = lazy(() => import('pages/Auctions/ItemDetails'))
+const AuctionbayProfile = lazy(() => import('pages/Auctions/Profile'))
 
 /* Restricted routes */
 const Login = lazy(() => import('pages/Login'))
@@ -38,7 +42,23 @@ export const AppRoutes: AppRoute[] = [
     path: '/signup',
     children: <Register />,
   },
+
   // Private Routes
+  {
+    type: RouteType.PRIVATE,
+    path: '/auctions',
+    children: <Auctionbay />,
+  },
+  {
+    type: RouteType.PRIVATE,
+    path: '/auctions/itemdetails/:id',
+    children: <ItemDetails />,
+  },
+  {
+    type: RouteType.PRIVATE,
+    path: '/profile/:userId',
+    children: <AuctionbayProfile />,
+  },
   // Public Routes
   {
     type: RouteType.PUBLIC,
