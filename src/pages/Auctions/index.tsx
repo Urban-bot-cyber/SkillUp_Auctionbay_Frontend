@@ -14,7 +14,7 @@ const Auctionbay: FC = () => {
             refetchOnWindowFocus: false,
         },
     )
-
+console.log(data)
     return (
         <Layout>
             <div className="p-2 mb-4">

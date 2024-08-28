@@ -13,7 +13,7 @@ export const getUser = async (id: string) =>
   apiRequest<undefined, UserType>('get', `${apiRoutes.USERS_PREFIX}/${id}`)
 
 export const currentUser = async () =>
-  apiRequest<undefined, UserType>('get', `${apiRoutes.USERS_PREFIX}`)
+  apiRequest<undefined, UserType>('get', `${apiRoutes.FETCH_USER}`)
 
 export const signout = async () =>
   apiRequest<undefined, void>('post', apiRoutes.SIGNOUT)
@@ -22,7 +22,7 @@ export const singup = async (data: RegisterUserFields) =>
   apiRequest<RegisterUserFields, UserType>('post', apiRoutes.SIGNUP, data)
 
 export const singin = async (data: LoginUserFields) =>
-  apiRequest<LoginUserFields, void>('post', apiRoutes.LOGIN, data)
+  apiRequest<LoginUserFields, UserType>('post', apiRoutes.LOGIN, data)
 
 export const uploadAvatar = async (formData: FormData, id: string) =>
   apiRequest<FormData, void>(

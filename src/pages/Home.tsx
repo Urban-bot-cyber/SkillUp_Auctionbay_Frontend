@@ -18,7 +18,7 @@ const Home: FC = () => {
       </div>
       <div className="home-img-container">
         <div className="container-fluid d-flex justify-content-center">
-          <img src="/images/home.png" alt="auctionbay" className="home_img" />
+
         </div>
       </div>
 

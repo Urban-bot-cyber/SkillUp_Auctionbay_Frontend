@@ -12,6 +12,8 @@ import { routes } from 'constants/routesConstants'
 import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
+import authStore from 'stores/auth.store'
+import { useQuery } from 'react-query'
 
 interface Props {
     defaultValues?: ItemType
@@ -19,7 +21,6 @@ interface Props {
     handleClose: () => void
     currentUserId?: string
 }
-
 
 const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUserId }) => {
     const { handleSubmit, errors, control, reset } = useCreateUpdateItemForm({ defaultValues })
@@ -30,9 +31,15 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
 
     const [file, setFile] = useState<File | null>(null)
 
+    const {data: userData} = useQuery(
+        ['currentUser'],
+        () => API.currentUser()
+    )
+    
+
     const onSubmit = handleSubmit(async (data: CreateUpdateItemFields) => {
-        if (currentUserId) {
-            data.user_id = currentUserId
+        if (userData.data) {
+            data.user_id = userData.data
         } else {
             console.error('currentUserId is undefined')
             return
@@ -46,6 +53,7 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
 
         if (!file) return
         const response = await API.createItem(data)
+        console.log(response)
         if (response.data?.statusCode === StatusCode.BAD_REQUEST) {
             setApiError(response.data.message)
             setShowError(true)

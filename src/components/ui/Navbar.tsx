@@ -72,10 +72,12 @@ const Navbar: FC = () => {
       <header>
         <AppBar position="static" style={{ background: 'white', boxShadow: 'none', padding: '10px' }}>
           <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Link className="navbar-brand mt-0" to={routes.HOME}>
-              <img src="/images/logo.png" alt="auctionbay" width={90} />
-            </Link>
-
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+              <Link className="navbar-brand mt-0" to={routes.HOME}>
+                <img src="/images/logo.png" alt="auctionbay" width={90} />
+              </Link>
+              {location.pathname === routes.AUCTIONS && <Slider />}
+            </Box>
             {authStore.user ? (
               <Box
                 sx={{
@@ -152,8 +154,6 @@ const Navbar: FC = () => {
           </Toolbar>
         </AppBar>
       </header>
-
-      {location.pathname === routes.AUCTIONS && <Slider />} {/* Conditionally render the Slider component */}
 
       {isPopoverOpen && (
         <Box
