@@ -5,7 +5,11 @@ import * as API from 'api/Api'
 import ItemCard from 'components/item/ItemCard'
 
 const Won:FC = () => {
-    const currentUserId = authStore.user?.id
+    const {data: userData} = useQuery(
+        ['currentUser'],
+        () => API.currentUser()
+    )
+    const currentUserId = userData.data.id
 
     const {data, isLoading} = useQuery(
         ['userbids'],

@@ -70,7 +70,7 @@ const ItemCardEditable: FC<Props> = ({ item, userId, onDelete, onFormSubmit }) =
                 <div className='card-price m-0'>{item.starting_price} €</div>
             </div>
             <div className="card-img">
-                <img src={`${process.env.REACT_APP_API_URL}/files/${item.image}`} alt={item.title} />
+                <img src={`${process.env.REACT_APP_API_URL}${item.image}`} alt={item.title} />
             </div>
             <div className='d-flex justify-content-between align-items-center'>
                 {timeLeft !== 'Done' && (

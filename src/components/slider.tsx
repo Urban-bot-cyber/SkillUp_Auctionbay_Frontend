@@ -1,23 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import PersonIcon from '@mui/icons-material/Person'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useQuery } from 'react-query'
+import * as API from 'api/Api'
 import { routes } from 'constants/routesConstants'
 
-type TabType = 'auctions' | 'profile'
+type TabType = 'auctions' | 'profile' | '' | '/'
 
 const Slider = () => {
   const [activeTab, setActiveTab] = useState<TabType>('auctions')
-  const navigate = useNavigate()  // Initialize useNavigate
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const { data: userData } = useQuery(['currentUser'], () => API.currentUser())
+  const userId = userData?.data?.id
+
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/profile/')) {
+      setActiveTab('profile')
+    } else if (location.pathname === routes.AUCTIONS) {
+      setActiveTab('auctions')
+    } else {
+      setActiveTab('') 
+    }
+  }, [location.pathname])
 
   const handleTabClick = (tab: TabType) => {
     setActiveTab(tab)
     if (tab === 'auctions') {
-      navigate(routes.AUCTIONS)  // Navigate to auctions route
+      navigate(routes.AUCTIONS)
     } else if (tab === 'profile') {
-      navigate(routes.PROFILE)  // Navigate to profile route
+      if (userId) {
+        navigate(`${routes.PROFILE}/${userId}`)
+      }
     }
+  }
+
+  const activeStyle = {
+    backgroundColor: '#1e1e1e',
+    color: 'white',
   }
 
   return (
@@ -37,18 +61,17 @@ const Slider = () => {
         onClick={() => handleTabClick('auctions')}
         sx={{
           flex: 1,
-          backgroundColor: activeTab === 'auctions' ? '#f1f3f4' : 'transparent',
-          color: activeTab === 'auctions' ? 'black' : 'gray',
+          ...(activeTab === 'auctions' ? activeStyle : { backgroundColor: 'transparent', color: 'gray' }),
           borderRadius: '50px',
           textTransform: 'none',
           '&:hover': {
-            backgroundColor: activeTab === 'auctions' ? '#f1f3f4' : 'transparent',
+            backgroundColor: activeTab === 'auctions' ? activeStyle.backgroundColor : 'transparent',
           },
           padding: '10px 20px',
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <HomeIcon sx={{ color: activeTab === 'auctions' ? 'black' : 'gray' }} />
+          <HomeIcon sx={{ color: activeTab === 'auctions' ? 'white' : 'gray' }} />
           <Typography variant="body1" sx={{ marginLeft: '8px' }}>
             Auctions
           </Typography>
@@ -59,12 +82,11 @@ const Slider = () => {
         onClick={() => handleTabClick('profile')}
         sx={{
           flex: 1,
-          backgroundColor: activeTab === 'profile' ? '#1e1e1e' : 'transparent',
-          color: activeTab === 'profile' ? 'white' : 'gray',
+          ...(activeTab === 'profile' ? activeStyle : { backgroundColor: 'transparent', color: 'gray' }),
           borderRadius: '50px',
           textTransform: 'none',
           '&:hover': {
-            backgroundColor: activeTab === 'profile' ? '#1e1e1e' : 'transparent',
+            backgroundColor: activeTab === 'profile' ? activeStyle.backgroundColor : 'transparent',
           },
           padding: '10px 20px',
         }}

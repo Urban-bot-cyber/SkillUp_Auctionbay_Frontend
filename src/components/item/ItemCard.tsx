@@ -97,7 +97,7 @@ const ItemCard: FC<Props> = ({ item }) => {
                     <div className='card-price m-0'>{price} €</div>
                 </div>
                 <div className="card-img">
-                    <img src={`${process.env.REACT_APP_API_URL}/files/${item.image}`} alt={item.title} />
+                    <img src={`${process.env.REACT_APP_API_URL}${item.image}`} alt={item.title} />
                 </div>
             </div>
         </Link>

@@ -12,7 +12,7 @@ export const fetchItems = async (pageNumber: number) =>
 export const allItems = async () =>
     apiRequest<undefined, ItemType[]>(
         'get',
-        `${apiRoutes.ITEM_PREFIX}/all`
+        `${apiRoutes.ITEM_PREFIX}`
     )
 
 export const createItem = async (data: CreateUpdateItemFields) =>

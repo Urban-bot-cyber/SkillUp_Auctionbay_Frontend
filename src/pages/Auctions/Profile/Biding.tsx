@@ -6,17 +6,22 @@ import ItemCard from 'components/item/ItemCard'
 
 
 const Bidding:FC = () => {
-    const currentUserId = authStore.user?.id
+
+    const {data: userData} = useQuery(
+        ['currentUser'],
+        () => API.currentUser()
+    )
+    const currentUserId = userData.data.id
     
     const { data, isLoading } = useQuery(
         ['userBids'],
-        () => API.userBids(currentUserId || ''),
+        () => API.userBids(currentUserId),
         {
             keepPreviousData: true,
             refetchOnWindowFocus: false,
         },
     )
-    
+    console.log(data)
     
     
     return (

@@ -21,11 +21,15 @@ const Navbar: FC = () => {
   const [apiError, setApiError] = useState('')
   const [showError, setShowError] = useState(false)
   const [showModal, setShowModal] = useState(false)
-
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false)
 
   const currentUserId = authStore.user?.id
+
+  const isAuctionPage = location.pathname === routes.AUCTIONS
+  const isProfilePage = location.pathname.startsWith('/profile/')
+  const isItemPage = location.pathname.startsWith('/auctions/itemdetails/')
+  const isHomePage = location.pathname === routes.HOME
 
   const handleAvatarClick = () => {
     setIsPopoverOpen((prev) => !prev)
@@ -76,7 +80,7 @@ const Navbar: FC = () => {
               <Link className="navbar-brand mt-0" to={routes.HOME}>
                 <img src="/images/logo.png" alt="auctionbay" width={90} />
               </Link>
-              {location.pathname === routes.AUCTIONS && <Slider />}
+              {(isAuctionPage || isProfilePage|| isItemPage || isHomePage) && <Slider />}
             </Box>
             {authStore.user ? (
               <Box

@@ -19,6 +19,8 @@ import Avatar from 'react-avatar'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
+import { FaCircleUser } from 'react-icons/fa6'
+import { useQuery } from 'react-query'
 
 interface Props {
     defaultValues?: UserType | null | undefined
@@ -32,6 +34,12 @@ enum FormSection {
 }
 
 const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
+
+    const {data: userData} = useQuery(
+        ['currentUser'],
+        () => API.currentUser()
+    )
+
     const [apiError, setApiError] = useState('')
     const [showError, setShowError] = useState(false)
     const [formSection, setFormSection] = useState<FormSection>(FormSection.Profile)
@@ -80,7 +88,8 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
         if (!file) return
         const formData = new FormData()
         formData.append('avatar', file, file.name)
-        const fileResponse = await API.uploadAvatar(formData, defaultValues?.id as string)
+        console.log(formData)
+        const fileResponse = await API.uploadAvatar(formData, userData.data.id as string)
         if (fileResponse.data?.statusCode === StatusCode.BAD_REQUEST) {
             setApiError(fileResponse.data.message)
             setShowError(true)
@@ -146,7 +155,7 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                             <input
                                                 {...field}
                                                 type="text"
-                                                placeholder={authStore.user?.first_name}
+                                                placeholder={userData.data.first_name}
                                                 aria-label="First name"
                                                 aria-describedby="first_name"
                                                 className={
@@ -172,7 +181,7 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                             <input
                                                 {...field}
                                                 type="text"
-                                                placeholder={authStore.user?.last_name}
+                                                placeholder={userData.data.last_name}
                                                 aria-label="Last name"
                                                 aria-describedby="last_name"
                                                 className={
@@ -199,7 +208,7 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                     <input
                                         {...field}
                                         type="email"
-                                        placeholder={authStore.user?.email}
+                                        placeholder={userData.data.email}
                                         aria-label="Email"
                                         aria-describedby="email"
                                         className={
@@ -437,13 +446,13 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                 variant="contained" 
                                 type="submit"
                                 sx={{
-                                    backgroundColor: '#ffff5c', // Bright yellow for "Save changes"
+                                    backgroundColor: '#ffff5c',
                                     color: 'black',
-                                    borderRadius: '20px', // Rounded corners
+                                    borderRadius: '20px', 
                                     padding: '10px 20px',
-                                    textTransform: 'none', // Keep the text as is
+                                    textTransform: 'none', 
                                     '&:hover': {
-                                        backgroundColor: '#ffff5c', // Same color on hover
+                                        backgroundColor: '#ffff5c', 
                                     },
                                 }}>Save changes</Button>
                         </div>
@@ -478,10 +487,9 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                     onChange={handleFileChange}
                                     id="avatar"
                                     name="avatar"
+                                    accept="image/*"
                                     type="file"
                                     className="form-control d-none"
-                                    aria-label="Avatar"
-                                    aria-describedby="avatar"
                                 />
                                 <label htmlFor="avatar" className='rounded-btn white-btn ms-4 me-4 mt-1 text-center' style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}>
                                     Upload new picture
@@ -511,6 +519,7 @@ const UpdateUserForm: FC<Props> = ({ defaultValues, onCloseModal }) => {
                                 >Cancel</Button>
                             <Button 
                                 variant="contained" 
+                                onClick={handleCloseModal}
                                 type="submit"
                                 sx={{
                                     backgroundColor: '#F4FF47', 

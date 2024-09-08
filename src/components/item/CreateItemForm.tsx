@@ -12,7 +12,6 @@ import { routes } from 'constants/routesConstants'
 import DatePicker from 'react-datepicker'
 
 import 'react-datepicker/dist/react-datepicker.css'
-import authStore from 'stores/auth.store'
 import { useQuery } from 'react-query'
 
 interface Props {
@@ -24,65 +23,77 @@ interface Props {
 
 const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUserId }) => {
     const { handleSubmit, errors, control, reset } = useCreateUpdateItemForm({ defaultValues })
-
     const [apiError, setApiError] = useState('')
     const [showError, setShowError] = useState(false)
+    const [file, setFile] = useState<File | null>(null)
     const navigate = useNavigate()
 
-    const [file, setFile] = useState<File | null>(null)
-
-    const {data: userData} = useQuery(
-        ['currentUser'],
-        () => API.currentUser()
-    )
-    
+    const { data: userData } = useQuery(['currentUser'], () => API.currentUser())
 
     const onSubmit = handleSubmit(async (data: CreateUpdateItemFields) => {
-        if (userData.data) {
-            data.user_id = userData.data
+        if (userData?.data) {
+            data.user_id = userData.data.id
         } else {
-            console.error('currentUserId is undefined')
+            console.error('current UserId is undefined')
             return
         }
-        console.log(data.end_date)
+
+        // Format end date
         if (data.end_date) {
             const dateObject = new Date(data.end_date)
-            const formattedDate = `${dateObject.getFullYear()}-${(dateObject.getMonth() + 1).toString().padStart(2, '0')}-${dateObject.getDate().toString().padStart(2, '0')}T${dateObject.getHours().toString().padStart(2, '0')}:${dateObject.getMinutes().toString().padStart(2, '0')}:${dateObject.getSeconds().toString().padStart(2, '0')}.${dateObject.getMilliseconds().toString().padStart(3, '0')}Z`
+            const formattedDate = `${dateObject.getFullYear()}-${(dateObject.getMonth() + 1)
+                .toString()
+                .padStart(2, '0')}-${dateObject.getDate()
+                .toString()
+                .padStart(2, '0')}T${dateObject.getHours()
+                .toString()
+                .padStart(2, '0')}:${dateObject.getMinutes()
+                .toString()
+                .padStart(2, '0')}:${dateObject.getSeconds()
+                .toString()
+                .padStart(2, '0')}.${dateObject.getMilliseconds().toString().padStart(3, '0')}Z`
             data.end_date = formattedDate
         }
 
-        if (!file) return
-        const response = await API.createItem(data)
-        console.log(response)
-        if (response.data?.statusCode === StatusCode.BAD_REQUEST) {
-            setApiError(response.data.message)
-            setShowError(true)
-        } else if (response.data?.statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
-            setApiError(response.data.message)
-            setShowError(true)
-        } else {
-            const formData = new FormData()
-            formData.append('image', file, file.name)
-            const fileResponse = await API.UploadItemImage(
-                formData,
-                response.data.id,
-            )
-            if (fileResponse.data?.statusCode === StatusCode.BAD_REQUEST) {
-                setApiError(fileResponse.data.message)
+        try {
+            const response = await API.createItem(data)
+
+            if (response.data?.statusCode === StatusCode.BAD_REQUEST) {
+                setApiError(response.data.message)
                 setShowError(true)
-            } else if (
-                fileResponse.data?.statusCode === StatusCode.INTERNAL_SERVER_ERROR
-            ) {
-                setApiError(fileResponse.data.message)
+                return
+            } else if (response.data?.statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
+                setApiError(response.data.message)
                 setShowError(true)
-            } else {
-                navigate(`${routes.PROFILE}/${currentUserId}`)
-                reset()
-                handleClose()
+                return
             }
+
+            if (file) {
+                const formData = new FormData()
+                formData.append('image', file, file.name)
+
+                const fileResponse = await API.UploadItemImage(formData, response.data.id)
+
+                if (fileResponse.data?.statusCode === StatusCode.BAD_REQUEST) {
+                    setApiError(fileResponse.data.message)
+                    setShowError(true)
+                    return
+                } else if (fileResponse.data?.statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
+                    setApiError(fileResponse.data.message)
+                    setShowError(true)
+                    return
+                }
+            }
+
+            navigate(`${routes.PROFILE}/${data.user_id}`)
+            reset()
+            handleClose()
+        } catch (error) {
+            console.error('Error submitting form', error)
+            setApiError('Something went wrong while submitting the form')
+            setShowError(true)
         }
     })
-
 
     const handleFileChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
         if (target.files) {
@@ -90,6 +101,7 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
             setFile(myfile)
         }
     }
+
     const handleRemoveImage = () => {
         setFile(null)
     }
@@ -107,6 +119,7 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
                                         <input
                                             type="file"
                                             id="image"
+                                            name="image"
                                             accept="image/*"
                                             onChange={handleFileChange}
                                             style={{ display: 'none' }}
@@ -191,7 +204,7 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
                                                         errors.starting_price ? 'form-control is-invalid form-with-icon-rounded' : 'form-control form-with-icon-rounded'
                                                     }
                                                 />
-                                                <span className="input-group-text bg-transparent form-icon-rounded" >€</span>
+                                                <span className="input-group-text bg-transparent form-icon-rounded">€</span>
                                             </div>
                                             {errors.starting_price && (
                                                 <div className="invalid-feedback text-danger">
@@ -225,15 +238,15 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
                                         </Form.Group>
                                     )}
                                 />
-
                             </div>
                         </div>
-
-
-
                         <div className='d-flex justify-content-end mt-3'>
-                            <Button className="rounded-btn light-gray me-2" onClick={handleClose}>Cancel</Button>
-                            <Button className="rounded-btn bright-yellow" type="submit"> Start auction </Button>
+                            <Button className="rounded-btn light-gray me-2" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                            <Button className="rounded-btn bright-yellow" type="submit">
+                                Start auction
+                            </Button>
                         </div>
                     </Form>
                 </Modal.Body>
@@ -249,7 +262,6 @@ const CreateItemForm: FC<Props> = ({ defaultValues, show, handleClose, currentUs
                 </ToastContainer>
             )}
         </>
-
     )
 }
 

@@ -31,7 +31,6 @@ const RegisterForm = () => {
 
     const onSubmit = handleSubmit(async (data: RegisterUserFields) => {
         const response = await API.singup(data)
-        console.log(response)
         if (response.data?.statusCode === StatusCode.BAD_REQUEST) {
             setApiError(response.data.message)
             setShowError(true)

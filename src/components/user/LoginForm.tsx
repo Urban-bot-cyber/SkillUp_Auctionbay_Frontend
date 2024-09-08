@@ -100,7 +100,7 @@ const LoginForm = () => {
                             </Form.Group>
                         )}
                     />
-                    <Button className="w-100 btn btn-success mb-2" type="submit">
+                    <Button className="w-100 btn rounded-btn bright-yellow mb-2" type="submit">
                         Sing in
                     </Button>
 

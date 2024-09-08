@@ -20,7 +20,7 @@ export const useCreateUpdateItemForm = ({ defaultValues }: Props) => {
     const CreateUpdateProductSchema = Yup.object().shape({
         title: Yup.string().required('Title is required'),
         description: Yup.string().required('Description is required'),
-        starting_price: Yup.number().required('Price is required'),
+        starting_price: Yup.number().required('Price is required').typeError('Price must be a number'),
         end_date: Yup.string().required('End date is required'),
         user_id: Yup.string().notRequired(),
     })
@@ -47,7 +47,7 @@ export const useCreateUpdateItemForm = ({ defaultValues }: Props) => {
         handleSubmit,
         errors,
         control,
-        reset
+        reset,
     }
 }
 

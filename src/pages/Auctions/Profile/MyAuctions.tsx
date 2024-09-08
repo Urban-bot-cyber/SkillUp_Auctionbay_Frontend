@@ -4,6 +4,7 @@ import { FC, useState } from 'react'
 import { ItemTypeId } from 'models/itemId'
 import ItemCardEditable from 'components/item/ItemCardEdit'
 import { StatusCode } from 'constants/errorConstants'
+import { useParams } from 'react-router-dom'
 
 
 interface Props {
@@ -11,11 +12,22 @@ interface Props {
 }
 
 
+
 const MyAuctions: FC<Props> = ({ currentUserId }) => {
-    const { data, isLoading, refetch } = useQuery(
-        ['findByUserId', currentUserId],
-        () => API.findByUserId(currentUserId || ''),
+    
+    const {userId} = useParams()
+
+    const {data: userData} = useQuery(
+        ['currentUser'],
+        () => API.currentUser()
     )
+
+
+    const { data, isLoading, refetch } = useQuery(
+        ['findByUserId', userId],
+        () => API.findByUserId(userId || ''),
+    )
+
 
     const [apiError, setApiError] = useState('')
     const [showError, setShowError] = useState(false)
@@ -80,7 +92,7 @@ const MyAuctions: FC<Props> = ({ currentUserId }) => {
                                 ))}
                             </div>
                         </>
-                    )}n
+                    )}
                 </>
             )}
         </div>

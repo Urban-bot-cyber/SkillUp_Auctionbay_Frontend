@@ -20,10 +20,16 @@ interface Props {
 const ItemDetails: FC<Props> = ({ defaultValues }) => {
     const { handleSubmit, errors, control } = useCreateBidForm({})
     const { id } = useParams<{ id?: string }>()
-    const currentUserId = authStore.user?.id
+
+    const {data: userData} = useQuery(
+        ['currentUser'],
+        () => API.currentUser()
+    )
+
+    const currentUserId = userData.data.id
 
     const currentDate = new Date()
-    const formattedDate = currentDate?.toISOString().slice(0, -1)
+    const formattedDate = currentDate?.toISOString()
 
     const { data } = useQuery(
         ['findOne', id],
